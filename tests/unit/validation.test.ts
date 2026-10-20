@@ -34,20 +34,17 @@ describe('chatSchema', () => {
 });
 
 describe('registerSchema', () => {
-  it('accepts an 8-character password and invite code, and normalizes the invite code', () => {
+  it('accepts an 8-character password and normalizes email', () => {
     const parsed = registerSchema.parse({
       email: ' USER@Example.com ',
       password: '12345678',
-      inviteCode: ' abcd2345 ',
     });
     expect(parsed.email).toBe('user@example.com');
-    expect(parsed.inviteCode).toBe('ABCD2345');
+    expect(parsed.password).toBe('12345678');
   });
 
-  it('rejects a password shorter than 8 and an invite code that is not exactly 8 characters', () => {
-    expect(registerSchema.safeParse({ email: 'a@b.co', password: '1234567', inviteCode: 'ABCD2345' }).success).toBe(false);
-    expect(registerSchema.safeParse({ email: 'a@b.co', password: '12345678', inviteCode: 'ABCD234' }).success).toBe(false);
-    expect(registerSchema.safeParse({ email: 'a@b.co', password: '12345678', inviteCode: 'ABCD23456' }).success).toBe(false);
+  it('rejects a password shorter than 8 characters', () => {
+    expect(registerSchema.safeParse({ email: 'a@b.co', password: '1234567' }).success).toBe(false);
   });
 });
 

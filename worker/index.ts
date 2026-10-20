@@ -8,6 +8,8 @@ import { chatRoutes } from './routes/chat';
 import { conversationRoutes } from './routes/conversations';
 import { modelRoutes } from './routes/models';
 
+export const APP_VERSION = '0.4.0';
+
 const app = new Hono<AppEnv>().basePath('/api');
 
 app.use('*', async (c, next) => {
@@ -44,6 +46,7 @@ app.get('/health', async (c) => {
   return c.json({
     status: database === 'ok' ? 'ok' : 'degraded',
     service: 'ai-web',
+    version: APP_VERSION,
     environment: c.env.APP_ENV ?? 'unknown',
     database,
     time: new Date().toISOString(),

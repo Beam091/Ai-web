@@ -1,7 +1,7 @@
 {
   "name": "ai-web",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "description": "AI Chat Platform on Cloudflare Workers + D1",
   "scripts": {
@@ -10,7 +10,7 @@
     "dev:web": "vite",
     "build": "vite build",
     "preview": "npm run build && wrangler dev --port 8787",
-    "deploy": "npm run deploy:production",
+    "deploy": "npm run build && wrangler deploy",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.worker.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "lint": "eslint . --max-warnings=0",
     "test": "npm run test:unit && npm run test:integration",
@@ -19,9 +19,7 @@
     "test:watch": "vitest --config vitest.config.ts",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
-    "cf-typegen": "wrangler types",
-    "deploy:staging": "npm run build && wrangler deploy --env staging",
-    "deploy:production": "npm run build && wrangler deploy --env production"
+    "cf-typegen": "wrangler types"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",

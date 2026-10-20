@@ -23,11 +23,6 @@ export const passwordSchema = z
 export const registerSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  inviteCode: z
-    .string()
-    .trim()
-    .length(INVITE_CODE_LENGTH, `รหัสเชิญต้องมี ${INVITE_CODE_LENGTH} ตัวอักษร`)
-    .transform((value) => value.toUpperCase()),
 });
 
 export const loginSchema = z.object({

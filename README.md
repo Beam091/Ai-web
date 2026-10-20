@@ -3,11 +3,8 @@
 เว็บแชท AI บน **Cloudflare Workers + D1** พร้อม frontend **React 19 + TypeScript + Vite + Tailwind CSS 4**
 รองรับผู้ให้บริการหลายรายผ่าน adapter: **OpenAI**, **Google Gemini** และ **Mock Provider** สำหรับทดสอบโดยไม่ต้องใช้ API key
 
-> **สถานะ:** deploy จริงแล้วทั้ง staging และ production โดยใช้ **Mock Provider** — ยังไม่ทดสอบ OpenAI/Gemini จริงเพราะยังไม่มี API keys
-> - Staging: <https://ai-web-staging.peerapatmatprasong.workers.dev>
+> **สถานะ:** deploy จริงบน Cloudflare Workers (production ตัวเดียว) โดยใช้ **Mock Provider** — ยังไม่ทดสอบ OpenAI/Gemini จริงเพราะยังไม่มี API keys
 > - Production: <https://ai-web.peerapatmatprasong.workers.dev>
->
-> รายละเอียดสถานะ/งานค้างทั้งหมดอยู่ใน [`แผนงาน/14-HANDOFF.md`](แผนงาน/14-HANDOFF.md)
 
 ## ความสามารถ
 
@@ -42,8 +39,7 @@ npm run typecheck          # TypeScript 3 projects
 npm run lint               # ESLint
 npm test                   # unit (Node) + integration (workerd + D1)
 npm run build              # frontend -> dist/client
-npm run deploy:staging     # build + deploy staging (D1/secrets ตั้งไว้แล้ว)
-npm run deploy:production  # build + deploy production
+npm run deploy             # build + deploy Cloudflare Worker
 ```
 
 ### Auto deploy

@@ -3,7 +3,6 @@ import { deleteCookie, setCookie } from 'hono/cookie';
 import type { AppEnv } from '../types';
 import { newId, hashPassword, randomToken, sha256Hex, verifyPassword } from '../lib/crypto';
 import { errors } from '../lib/errors';
-import { compareStringsSafely } from '../lib/compare';
 import { checkRateLimit, intEnv } from '../lib/rate-limit';
 import { loginSchema, registerSchema, zodMessage } from '../lib/validation';
 import {
@@ -41,12 +40,6 @@ authRoutes.post('/register', async (c) => {
 
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) throw errors.badRequest(zodMessage(parsed.error), 'VALIDATION_ERROR');
-
-  const signupCode = c.env.SIGNUP_CODE?.trim().toUpperCase();
-  if (!signupCode) throw errors.forbidden('ระบบยังไม่เปิดรับสมัครสมาชิก (ไม่ได้ตั้งค่า SIGNUP_CODE)');
-  if (!(await compareStringsSafely(parsed.data.inviteCode, signupCode))) {
-    throw errors.forbidden('รหัสเชิญไม่ถูกต้อง');
-  }
 
   const windowMs = intEnv(c.env.LOGIN_RATE_WINDOW_MINUTES, 15, 1, 1440) * 60_000;
   const limit = intEnv(c.env.LOGIN_RATE_LIMIT, 10, 1, 1000);

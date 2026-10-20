@@ -234,9 +234,10 @@ export function Sidebar({
               <p className="truncate text-xs text-zinc-200" title={user.email}>
                 {user.email}
               </p>
-              <p className="text-[10px] uppercase tracking-wider text-zinc-500">
-                {user.role === 'admin' ? 'Administrator' : 'Member'}
-              </p>
+              <div className="flex items-center justify-between text-[10px] text-zinc-500">
+                <span className="uppercase tracking-wider">{user.role === 'admin' ? 'Admin' : 'Member'}</span>
+                <span className="font-mono text-zinc-600">v{__APP_VERSION__}</span>
+              </div>
             </div>
             <button
               type="button"

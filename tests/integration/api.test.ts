@@ -5,7 +5,6 @@ import type { Env } from '../../worker/types';
 const env = rawEnv as unknown as Env;
 
 const BASE = 'https://example.com';
-const INVITE = 'TEST2026';
 const PASSWORD = 'correct-horse-battery';
 
 interface Registered {
@@ -17,7 +16,7 @@ async function register(email: string): Promise<Registered> {
   const response = await SELF.fetch(`${BASE}/api/auth/register`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ email, password: PASSWORD, inviteCode: INVITE }),
+    body: JSON.stringify({ email, password: PASSWORD }),
   });
   expect(response.status).toBe(201);
   const body = (await response.json()) as { user: Registered['user'] };
@@ -60,12 +59,13 @@ beforeEach(async () => {
 });
 
 describe('health', () => {
-  it('reports the database as reachable', async () => {
+  it('reports the database as reachable and returns version', async () => {
     const response = await SELF.fetch(`${BASE}/api/health`);
     expect(response.status).toBe(200);
-    const body = (await response.json()) as { status: string; database: string };
+    const body = (await response.json()) as { status: string; database: string; version: string };
     expect(body.status).toBe('ok');
     expect(body.database).toBe('ok');
+    expect(body.version).toBe('0.4.0');
   });
 
   it('returns JSON 404 for unknown API routes', async () => {
@@ -84,13 +84,13 @@ describe('authentication', () => {
     expect(second.user.role).toBe('user');
   });
 
-  it('rejects registration with the wrong invite code', async () => {
+  it('rejects registration with a password shorter than 8 characters', async () => {
     const response = await SELF.fetch(`${BASE}/api/auth/register`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ email: 'x@example.com', password: PASSWORD, inviteCode: 'WRONG123' }),
+      body: JSON.stringify({ email: 'x@example.com', password: 'short' }),
     });
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(400);
   });
 
   it('logs in with a valid password and rejects a wrong one', async () => {

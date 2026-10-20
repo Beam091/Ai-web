@@ -17,6 +17,9 @@ dist/
 แผนงาน/token.*
 แผนงาน/*.token
 
+# Do not upload internal planning docs to GitHub
+แผนงาน/
+
 # Logs
 *.log
 npm-debug.log*

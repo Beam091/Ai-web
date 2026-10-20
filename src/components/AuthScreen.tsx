@@ -12,9 +12,7 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showInviteCode, setShowInviteCode] = useState(false);
   const [error, setError] = useState<string | null>(initialNotice ?? null);
   const [busy, setBusy] = useState(false);
 
@@ -31,7 +29,7 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
       const result =
         mode === 'login'
           ? await login(email.trim(), password)
-          : await register(email.trim(), password, inviteCode.trim().toUpperCase());
+          : await register(email.trim(), password);
       onAuthenticated(result.user);
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : 'เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ กรุณาลองใหม่');
@@ -133,7 +131,7 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
             <p className="mt-1 text-xs text-zinc-500">
               {mode === 'login'
                 ? 'เข้าสู่ระบบเพื่อดูประวัติการสนทนาของคุณ'
-                : 'ต้องใช้รหัสเชิญจากผู้ดูแลระบบเท่านั้น'}
+                : 'กรอกอีเมลและรหัสผ่านเพื่อเริ่มใช้งาน'}
             </p>
 
             <form onSubmit={submit} className="mt-5 space-y-4">
@@ -182,45 +180,6 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
                 </div>
               </div>
 
-              {mode === 'register' && (
-                <div>
-                  <label htmlFor="invite" className="mb-1.5 block text-xs font-medium text-zinc-400">
-                    รหัสเชิญ <span className="font-normal text-zinc-600">(8 ตัวอักษร)</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="invite"
-                      type={showInviteCode ? 'text' : 'password'}
-                      required
-                      minLength={8}
-                      maxLength={8}
-                      autoComplete="off"
-                      autoCapitalize="characters"
-                      autoCorrect="off"
-                      spellCheck={false}
-                      value={inviteCode}
-                      onChange={(event) => setInviteCode(event.target.value.toUpperCase())}
-                      placeholder="เช่น A1B2C3D4"
-                      aria-describedby="invite-help"
-                      className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 pr-11 text-sm uppercase tracking-[0.18em] text-zinc-100 placeholder:normal-case placeholder:tracking-normal placeholder:text-zinc-600 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/30"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowInviteCode((current) => !current)}
-                      aria-label={showInviteCode ? 'ซ่อนรหัสเชิญ' : 'แสดงรหัสเชิญ'}
-                      aria-pressed={showInviteCode}
-                      title={showInviteCode ? 'ซ่อนรหัสเชิญ' : 'แสดงรหัสเชิญ'}
-                      className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-zinc-500 transition hover:bg-white/5 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-indigo-400"
-                    >
-                      {showInviteCode ? <EyeOffIcon /> : <EyeIcon />}
-                    </button>
-                  </div>
-                  <p id="invite-help" className="mt-1.5 text-[11px] text-zinc-600">
-                    รับรหัส 8 ตัวอักษรจากผู้ดูแลระบบ
-                  </p>
-                </div>
-              )}
-
               {error && (
                 <p role="alert" className="rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-xs leading-relaxed text-rose-300">
                   {error}
@@ -242,6 +201,8 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
             ผู้ใช้คนแรกของระบบจะได้รับสิทธิ์ Administrator
             <br />
             การใช้งานอยู่ภายใต้นโยบายความเป็นส่วนตัวของเจ้าของเว็บไซต์
+            <br />
+            <span className="mt-1 inline-block font-mono text-[10px] text-zinc-700">v{__APP_VERSION__}</span>
           </p>
         </div>
       </section>

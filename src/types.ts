@@ -50,3 +50,7 @@ export interface Selection {
   provider: string;
   model: string;
 }
+
+declare global {
+  const __APP_VERSION__: string;
+}

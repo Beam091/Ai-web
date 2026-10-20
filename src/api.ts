@@ -60,14 +60,10 @@ export function login(email: string, password: string): Promise<{ user: User }> 
   return apiFetch('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
 }
 
-export function register(
-  email: string,
-  password: string,
-  inviteCode: string,
-): Promise<{ user: User }> {
+export function register(email: string, password: string): Promise<{ user: User }> {
   return apiFetch('/api/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email, password, inviteCode }),
+    body: JSON.stringify({ email, password }),
   });
 }
 
