@@ -3,6 +3,41 @@
 รูปแบบ: วันที่ → Added / Changed / Fixed / Removed / Security
 อ้างอิง Task ID และไฟล์ที่เกี่ยวข้องเมื่อเป็นไปได้
 
+## [0.3.0] — 2026-10-20
+
+### Added
+
+- **Auth UX ตาม requirement** (AUTH-03)
+  - รหัสผ่านขั้นต่ำลดจาก 10 → **8 ตัวอักษร** (client + server)
+  - รหัสเชิญบังคับ **8 ตัวอักษร** และ normalize เป็นตัวพิมพ์ใหญ่ทั้ง client/server
+  - ปุ่มแสดง/ซ่อนรหัสผ่านและรหัสเชิญ (`EyeIcon` / `EyeOffIcon`) พร้อม `aria-label`, `aria-pressed`
+  - ฟอร์มสมัครแสดงคำใบ้ “รับรหัส 8 ตัวอักษรจากผู้ดูแลระบบ”
+- **GitHub Actions CD** (DEPLOY-04)
+  - `.github/workflows/deploy.yml`: push `main` หรือ `workflow_dispatch` → typecheck/lint/test/build → D1 migration production → `wrangler deploy --env production`
+  - ตั้ง GitHub repository secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+  - merge PR #1 เข้า `main` แล้ว commit `2bd5d76` เพื่อให้โค้ดปรากฏใน repository
+- **หลักฐาน staging auth 8 ตัว**: register 201, login 200, invite 7 ตัว → 400, invite 8 ตัวผิด → 403, chat 55 events/489 chars/`done`; ลบข้อมูลทดสอบแล้ว
+
+### Changed
+
+- `SIGNUP_CODE` staging/production เปลี่ยนเป็นรหัสสุ่ม 8 ตัวอักษร (ค่าเก็บใน `แผนงาน/token`; ไม่ commit)
+- `.dev.vars` และ test config ใช้ `DEV2026` / `TEST2026` (8 ตัว)
+- unit tests เพิ่มเป็น **28** (เพิ่ม register schema: password 8, invite 8, uppercase); integration ยัง **16**
+- `README.md`, `แผนงาน/00`, `01`, `05`, `07`, `08`, `09`, `10`, `12`, `13`, `14` อัปเดตตามพฤติกรรมและวิธี deploy ใหม่
+- `package.json` version `0.3.0`
+
+### Security
+
+- รหัสเชิญ 8 ตัวอักษรสุ่มแบบ hex (~40-bit) + rate limit 10 ครั้ง/15 นาที
+- **ข้อควรระวัง**: รหัสผ่านขั้นต่ำ 8 ตัวอ่อนกว่าค่าแนะนำทั่วไป (RISK-14) — ควรใช้รหัสผ่านยาว/สุ่ม หรือเพิ่มขั้นต่ำภายหลัง
+- ไม่มี secret ใน repo/frontend; token และ signup codes อยู่ใน `แผนงาน/token` (ignored, mode 600)
+
+### Known limitations (ณ 0.3.0)
+
+- ยังไม่ได้เชื่อม Cloudflare Workers Builds Git integration โดยตรง เพราะต้องติดตั้ง GitHub App ผ่าน dashboard และใช้ user-scoped token; ใช้ GitHub Actions CD แทน
+- ยังไม่ทดสอบ OpenAI/Gemini live, browser QA, CPU PBKDF2, rate-limit concurrency
+- Production ยังไม่มีผู้ใช้; ผู้สมัครคนแรกจะได้ role `admin`
+
 ## [0.2.0] — 2026-10-20
 
 ### Added

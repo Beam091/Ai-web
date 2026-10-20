@@ -125,7 +125,7 @@
 **เหตุผลที่เลือก:** unit เร็วและ debug ง่าย; integration ใช้ D1 จริงและ middleware จริง; ลดเวลา test
 
 **ข้อเสีย:** ต้องรันสองคำสั่ง (ถูกห่อใน `npm test` แล้ว)
-**ทดสอบแล้ว:** ใช่ — 26 unit + 16 integration ผ่าน
+**ทดสอบแล้ว:** ใช่ — 28 unit + 16 integration ผ่าน
 
 ---
 
@@ -225,3 +225,31 @@
 **เหตุผลที่เลือก:** เป็นแพ็กเกจทางการรุ่นใหม่ รองรับ Vitest 4, ใช้ `cloudflareTest()` plugin, D1 migrations ผ่าน `readD1Migrations`
 **ข้อเสีย:** API ใหม่ เอกสาร/ตัวอย่างบนอินเทอร์เน็ตอาจยังอ้างชื่อเก่า
 **ทดสอบแล้ว:** ใช่ — integration 16 tests ผ่าน
+
+---
+
+## D-016 — รหัสผ่านขั้นต่ำ 8 ตัว และรหัสเชิญ 8 ตัว + ปุ่มแสดง/ซ่อน
+
+**วันที่:** 2026-10-20
+**สถานะ:** ใช้งานจริง
+**บริบท:** เจ้าของต้องการให้กรอกง่าย โดยใช้รหัส 8 ตัว และดูรหัสได้ระหว่างกรอก
+
+**ทางเลือก:** คงรหัสผ่าน 10 + invite ยาว, ลด password เป็น 8 (เลือก), บังคับ invite 8 ตัว (เลือก), ใช้ magic link
+
+**เหตุผลที่เลือก:** ตรงกับ requirement; invite 8 ตัวสุ่ม hex + rate limit ยังเดายากพอสำหรับ MVP; normalize uppercase ลดปัญหากรอกผิด
+**ข้อเสีย:** password 8 ตัวอ่อนกว่าค่าแนะนำทั่วไป (RISK-14); invite 8 ตัวสั้นกว่าเดิม
+**ทดสอบแล้ว:** ใช่ — unit 2 tests + staging register/login/invite length/chat
+
+---
+
+## D-017 — ใช้ GitHub Actions เป็น CD แทน Cloudflare Workers Builds
+
+**วันที่:** 2026-10-20
+**สถานะ:** ใช้งานจริง
+**บริบท:** ต้องการให้ push GitHub แล้ว Cloudflare อัปเดตอัตโนมัติ แต่ token ที่มีเป็น account-owned และ Workers Builds API ตอบ `Invalid token`; Git integration ต้องติดตั้ง GitHub App ผ่าน dashboard
+
+**ทางเลือก:** รอ user-scoped token + authorize GitHub App, ใช้ GitHub Actions + Wrangler (เลือก), deploy มือ
+
+**เหตุผลที่เลือก:** ทำงานได้ทันทีด้วย token ที่มี, เก็บ secret ใน GitHub Secrets, ตรวจ test ก่อน deploy, ไม่ผูกกับ dashboard state
+**ข้อเสีย:** ไม่มี preview build อัตโนมัติต่อ PR และยังไม่เห็น build logs ใน Cloudflare dashboard
+**ทดสอบแล้ว:** ใช่หลัง push `main` — ดู Actions run `Deploy production`

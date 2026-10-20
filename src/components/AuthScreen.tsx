@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { ApiError, login, register } from '../api';
 import type { User } from '../types';
-import { SparkIcon } from './Icons';
+import { EyeIcon, EyeOffIcon, SparkIcon } from './Icons';
 
 interface AuthScreenProps {
   onAuthenticated: (user: User) => void;
@@ -13,6 +13,8 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showInviteCode, setShowInviteCode] = useState(false);
   const [error, setError] = useState<string | null>(initialNotice ?? null);
   const [busy, setBusy] = useState(false);
 
@@ -20,8 +22,8 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
     event.preventDefault();
     if (busy) return;
     setError(null);
-    if (mode === 'register' && password.length < 10) {
-      setError('รหัสผ่านต้องมีอย่างน้อย 10 ตัวอักษร');
+    if (mode === 'register' && password.length < 8) {
+      setError('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
       return;
     }
     setBusy(true);
@@ -29,7 +31,7 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
       const result =
         mode === 'login'
           ? await login(email.trim(), password)
-          : await register(email.trim(), password, inviteCode.trim());
+          : await register(email.trim(), password, inviteCode.trim().toUpperCase());
       onAuthenticated(result.user);
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : 'เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ กรุณาลองใหม่');
@@ -155,34 +157,67 @@ export function AuthScreen({ onAuthenticated, initialNotice }: AuthScreenProps) 
                 <label htmlFor="password" className="mb-1.5 block text-xs font-medium text-zinc-400">
                   รหัสผ่าน
                 </label>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  minLength={mode === 'register' ? 10 : 1}
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder={mode === 'register' ? 'อย่างน้อย 10 ตัวอักษร' : '••••••••••'}
-                  className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/30"
-                />
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    minLength={mode === 'register' ? 8 : 1}
+                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder={mode === 'register' ? 'อย่างน้อย 8 ตัวอักษร' : '••••••••••'}
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 pr-11 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/30"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    aria-label={showPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
+                    aria-pressed={showPassword}
+                    title={showPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
+                    className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-zinc-500 transition hover:bg-white/5 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-indigo-400"
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
               </div>
 
               {mode === 'register' && (
                 <div>
                   <label htmlFor="invite" className="mb-1.5 block text-xs font-medium text-zinc-400">
-                    รหัสเชิญ
+                    รหัสเชิญ <span className="font-normal text-zinc-600">(8 ตัวอักษร)</span>
                   </label>
-                  <input
-                    id="invite"
-                    type="password"
-                    required
-                    autoComplete="off"
-                    value={inviteCode}
-                    onChange={(event) => setInviteCode(event.target.value)}
-                    placeholder="รหัสจากผู้ดูแลระบบ"
-                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/30"
-                  />
+                  <div className="relative">
+                    <input
+                      id="invite"
+                      type={showInviteCode ? 'text' : 'password'}
+                      required
+                      minLength={8}
+                      maxLength={8}
+                      autoComplete="off"
+                      autoCapitalize="characters"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      value={inviteCode}
+                      onChange={(event) => setInviteCode(event.target.value.toUpperCase())}
+                      placeholder="เช่น A1B2C3D4"
+                      aria-describedby="invite-help"
+                      className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 pr-11 text-sm uppercase tracking-[0.18em] text-zinc-100 placeholder:normal-case placeholder:tracking-normal placeholder:text-zinc-600 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowInviteCode((current) => !current)}
+                      aria-label={showInviteCode ? 'ซ่อนรหัสเชิญ' : 'แสดงรหัสเชิญ'}
+                      aria-pressed={showInviteCode}
+                      title={showInviteCode ? 'ซ่อนรหัสเชิญ' : 'แสดงรหัสเชิญ'}
+                      className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-zinc-500 transition hover:bg-white/5 hover:text-zinc-200 focus-visible:outline-2 focus-visible:outline-indigo-400"
+                    >
+                      {showInviteCode ? <EyeOffIcon /> : <EyeIcon />}
+                    </button>
+                  </div>
+                  <p id="invite-help" className="mt-1.5 text-[11px] text-zinc-600">
+                    รับรหัส 8 ตัวอักษรจากผู้ดูแลระบบ
+                  </p>
                 </div>
               )}
 

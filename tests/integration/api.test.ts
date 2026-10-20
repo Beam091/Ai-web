@@ -5,7 +5,7 @@ import type { Env } from '../../worker/types';
 const env = rawEnv as unknown as Env;
 
 const BASE = 'https://example.com';
-const INVITE = 'test-invite-code';
+const INVITE = 'TEST2026';
 const PASSWORD = 'correct-horse-battery';
 
 interface Registered {
@@ -88,7 +88,7 @@ describe('authentication', () => {
     const response = await SELF.fetch(`${BASE}/api/auth/register`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ email: 'x@example.com', password: PASSWORD, inviteCode: 'wrong' }),
+      body: JSON.stringify({ email: 'x@example.com', password: PASSWORD, inviteCode: 'WRONG123' }),
     });
     expect(response.status).toBe(403);
   });

@@ -14,7 +14,7 @@ export default defineConfig({
             TEST_MIGRATIONS: migrations,
             // Explicit values so a local .dev.vars can never change test behaviour.
             APP_ENV: 'test',
-            SIGNUP_CODE: 'test-invite-code',
+            SIGNUP_CODE: 'TEST2026',
             DEFAULT_PROVIDER: 'mock',
             CHAT_RATE_LIMIT: '100',
             CHAT_RATE_WINDOW_MINUTES: '5',

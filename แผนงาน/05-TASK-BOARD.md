@@ -15,6 +15,7 @@
 | DB-02 | Query layer + ownership + history/context | P0 | integration: list/detail/rename/delete + IDOR |
 | AUTH-01 | Register (invite), login, logout, me + session cookie | P0 | integration 6 cases |
 | AUTH-02 | PBKDF2 hashing, session token hash, CSRF guard, rate limit | P0 | unit crypto 4; integration CSRF 2; lint |
+| AUTH-03 | รหัสผ่านขั้นต่ำ 8, รหัสเชิญ 8 ตัว, ปุ่มแสดง/ซ่อนรหัส | P1 | unit validation 2 + staging register/login ผ่าน |
 | PROV-01 | `AIProvider` interface + registry + catalog/allowlist | P0 | unit catalog 4 |
 | PROV-02 | OpenAI adapter (stream, error mapping, no key leak) | P0 | unit 3 (mocked fetch) |
 | PROV-03 | Gemini adapter (roles/system/thought handling) | P0 | unit 2 (mocked fetch) |
@@ -26,13 +27,14 @@
 | UI-02 | Chat view, Markdown, code highlight, copy, streaming UI | P1 | build/lint; ใช้งานกับ Mock ผ่าน curl/SSE |
 | UI-03 | Auth screen (login/register) + session restore | P0 | build; auth flow ผ่าน API tests |
 | UI-04 | Responsive + keyboard/a11y basis | P1 | โค้ดมี breakpoints/aria; **ยังไม่ตรวจด้วยตา** |
-| TEST-01 | Unit tests | P0 | 26 passed |
+| TEST-01 | Unit tests | P0 | 28 passed |
 | TEST-02 | Integration tests (workerd + D1) | P0 | 16 passed (รวม abort) |
 | HARD-01 | Timeout + เพดานความยาวคำตอบ | P1 | `AI_TIMEOUT_SECONDS` / `AI_MAX_OUTPUT_CHARS`; unit 4 + manual timeout/cap ใน `08` |
 | POLISH-01 | ลด bundle ด้วย lazy Markdown/highlight | P2 | main 262.16 kB + lazy Markdown 339.15 kB; build ไม่มี warning; asset เสิร์ฟ 200 |
 | TEST-03 | CI workflow (typecheck/lint/test/build) | P1 | `.github/workflows/ci.yml`; PR #1 run `39400469357` ผ่าน |
 | DEPLOY-01 | Local deploy-equivalent verification | P0 | `wrangler dev` + local D1 + curl ผ่าน |
-| DEPLOY-02 | Deploy staging + production จริง | P0 | staging `820e706c...` / production `bcb17774...`; health/SPA/flow ผ่าน |
+| DEPLOY-02 | Deploy staging + production จริง | P0 | staging + production; health/SPA/flow ผ่าน |
+| DEPLOY-04 | Auto deploy จาก GitHub ไป production | P0 | `.github/workflows/deploy.yml`; secrets ตั้งใน GitHub; push `main` trigger |
 | DOC-02 | Security/deployment/API/DB docs | P0 | เอกสารตรงกับโค้ด |
 | DOC-03 | อัปเดตเอกสารหลัง deploy จริง | P1 | มี URL, version, D1 IDs และผลตรวจจริงใน `09`/`08` |
 | QA-03 | ทดสอบ abort/timeout/output cap บน staging | P1 | ผ่านทั้ง 3 กรณีด้วย Mock provider |

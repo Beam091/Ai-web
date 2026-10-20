@@ -42,7 +42,7 @@ authRoutes.post('/register', async (c) => {
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) throw errors.badRequest(zodMessage(parsed.error), 'VALIDATION_ERROR');
 
-  const signupCode = c.env.SIGNUP_CODE;
+  const signupCode = c.env.SIGNUP_CODE?.trim().toUpperCase();
   if (!signupCode) throw errors.forbidden('ระบบยังไม่เปิดรับสมัครสมาชิก (ไม่ได้ตั้งค่า SIGNUP_CODE)');
   if (!(await compareStringsSafely(parsed.data.inviteCode, signupCode))) {
     throw errors.forbidden('รหัสเชิญไม่ถูกต้อง');

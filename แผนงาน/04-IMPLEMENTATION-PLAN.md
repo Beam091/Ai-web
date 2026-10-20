@@ -148,7 +148,7 @@
 - CI รัน typecheck/lint/test/build
 
 **เกณฑ์เสร็จ:** ทุก suite ผ่าน, ระบุสิ่งที่ไม่ทดสอบ
-**ผล:** DONE — 26 unit + 16 integration ผ่าน
+**ผล:** DONE — 28 unit + 16 integration ผ่าน
 
 ## Phase 11 — MVP-08 Deployment
 
@@ -176,7 +176,7 @@
 ทำแล้ว:
 - เพิ่ม `AI_TIMEOUT_SECONDS` + `AI_MAX_OUTPUT_CHARS` พร้อม unit/manual tests
 - แก้ abort listener cleanup และบันทึก partial ด้วย `status=aborted`/`error`
-- ลด bundle ด้วย lazy Markdown/highlight (main 262 kB, chunk แยก 339 kB)
+- ลด bundle ด้วย lazy Markdown/highlight (main ~264.61 kB, chunk แยก 339.15 kB)
 
 ยังเหลือ:
 - พิจารณา Cloudflare Rate Limiting/WAF แทน D1-only
@@ -207,5 +207,5 @@ DEPLOY ─> LIVE PROVIDER TEST
 | ค่าใช้จ่าย API บานปลาย | rate limit + timeout/output cap + ตั้ง budget ที่ provider + ติดตาม usage |
 | D1 โควตา/ขนาด | retention policy, ลบข้อความเก่า, ติดตาม metrics |
 | ไม่มี live test | ทำ LIVE-01/02 ก่อนเปิดผู้ใช้จริง |
-| Bundle ใหญ่ | แก้แล้วด้วย POLISH-01 (lazy Markdown); main chunk 262 kB |
+| Bundle ใหญ่ | แก้แล้วด้วย POLISH-01 (lazy Markdown); main chunk ~264.61 kB |
 | Streaming ถูกตัดกลางทาง | บันทึก partial (`aborted`/`error`) + แจ้งผู้ใช้ + ให้ส่งใหม่; timeout/cap ส่ง error code ชัดเจน |
