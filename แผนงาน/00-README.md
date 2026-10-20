@@ -41,15 +41,15 @@
 | รายการ | ค่า |
 |---|---|
 | Working directory | `/workspaces/Ai-web` |
-| Branch | `deploy/staging-production` → PR [#1](https://github.com/Beam091/Ai-web/pull/1) (base `main`, ยังไม่ merge) |
-| Commit ล่าสุด | `ba30914` + commit เอกสารหลัง CI (ดู `git log`) |
+| Branch | `main` (merge PR #1 แล้ว) + branch `feat/8-char-invite-password-toggle` สำหรับ auth 8 ตัว |
+| Commit ล่าสุด | `2bd5d76` (merge PR #1) + commit auth 8 ตัว/GitHub Actions (ดู `git log`) |
 | Runtime | Cloudflare Workers (workerd), `compatibility_date = 2026-10-01` |
 | Frontend | React 19 + TypeScript + Vite 7 + Tailwind CSS 4 |
 | Backend | Hono 4 บน Worker (`worker/index.ts`) |
 | Database | Cloudflare D1 (SQLite), migrations ใน `migrations/` |
 | Static hosting | Workers Static Assets จาก `dist/client` (SPA fallback) |
-| Tests | Vitest 4: unit 26 tests (Node) + integration 16 tests (workerd + D1 จริงในเครื่อง) — ผ่านทั้งหมด; GitHub Actions `verify` ผ่าน |
-| Deploy | **Deploy แล้ว** staging + production (Cloudflare Workers + D1, region APAC) เมื่อ 2026-10-20 |
+| Tests | Vitest 4: unit 28 tests (Node) + integration 16 tests (workerd + D1 จริงในเครื่อง) — ผ่านทั้งหมด; GitHub Actions `verify` ผ่าน |
+| Deploy | **Deploy แล้ว** staging + production (Cloudflare Workers + D1, region APAC) เมื่อ 2026-10-20; push `main` deploy production อัตโนมัติผ่าน GitHub Actions |
 | Provider จริง | **ยังไม่เคยเรียก OpenAI/Gemini จริง** — ไม่มี API Key; ทั้งสอง env ใช้ `DEFAULT_PROVIDER=mock` |
 
 ## 5. โครงสร้างโฟลเดอร์โดยย่อ

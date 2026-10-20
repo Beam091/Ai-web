@@ -11,7 +11,8 @@
 
 ## ความสามารถ
 
-- สมัครด้วยรหัสเชิญ, login/logout, session cookie (HttpOnly/SameSite/Secure บน non-dev)
+- สมัครด้วยรหัสเชิญ 8 ตัวอักษร, รหัสผ่านขั้นต่ำ 8 ตัวอักษร, login/logout, session cookie (HttpOnly/SameSite/Secure บน non-dev)
+- ปุ่มแสดง/ซ่อนรหัสผ่านและรหัสเชิญขณะกรอก
 - แยกข้อมูลผู้ใช้ (ownership isolation), CSRF guard, rate limiting
 - Streaming คำตอบผ่าน SSE, ปุ่ม Stop, บันทึกข้อความบางส่วนเมื่อ abort
 - Guardrails: timeout 90s และเพดานคำตอบ 32,000 ตัวอักษร (ปรับผ่าน env ได้)
@@ -31,7 +32,7 @@ npm run db:migrate:local
 npm run dev                 # Vite :5173 + Worker :8787
 ```
 
-เปิด `http://localhost:5173` แล้วสมัครด้วยรหัสเชิญจาก `.dev.vars`
+เปิด `http://localhost:5173` แล้วสมัครด้วยรหัสเชิญ 8 ตัวอักษรจาก `.dev.vars`
 หรือทดสอบ API โดยตรงที่ `http://127.0.0.1:8787`
 
 ### คำสั่งหลัก
@@ -44,6 +45,12 @@ npm run build              # frontend -> dist/client
 npm run deploy:staging     # build + deploy staging (D1/secrets ตั้งไว้แล้ว)
 npm run deploy:production  # build + deploy production
 ```
+
+### Auto deploy
+
+Push เข้า `main` จะ trigger `.github/workflows/deploy.yml` เพื่อ test, apply D1 migrations และ deploy production อัตโนมัติ
+ต้องมี GitHub secrets `CLOUDFLARE_API_TOKEN` และ `CLOUDFLARE_ACCOUNT_ID` (ตั้งไว้แล้ว)
+Cloudflare Workers Builds แบบ Git integration ต้อง authorize GitHub App ผ่าน dashboard เพิ่มเติม; ยังไม่ได้เชื่อมในรอบนี้
 
 ## โครงสร้าง
 

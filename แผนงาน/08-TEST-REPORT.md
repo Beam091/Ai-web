@@ -1,6 +1,6 @@
 # 08 — TEST REPORT (ผลทดสอบจริง)
 
-> อัปเดตล่าสุด: **2026-10-20 ~09:25 UTC**
+> อัปเดตล่าสุด: **2026-10-20 ~09:45 UTC**
 > สภาพแวดล้อม: Linux / Node `v24.21.0` / npm `11.19.0` / Wrangler `4.151.2` / Vitest `4.1.12`
 > หลักการ: บันทึกเฉพาะผลที่ **รันจริง** — งานที่ยังไม่ได้รันจะอยู่ในหัวข้อ “ยังไม่ทดสอบ” และห้ามถือว่าผ่าน
 
@@ -10,9 +10,9 @@
 |---|---|---|
 | TypeScript | `npm run typecheck` (3 projects) | **ผ่าน** |
 | Lint | `npm run lint` (`eslint . --max-warnings=0`) | **ผ่าน** 0 warning |
-| Unit tests | `npm run test:unit` | **ผ่าน 26/26** (5 ไฟล์) |
+| Unit tests | `npm run test:unit` | **ผ่าน 28/28** (5 ไฟล์) |
 | Integration tests | `npm run test:integration` (workerd + D1) | **ผ่าน 16/16** (1 ไฟล์) |
-| Frontend build | `npm run build` | **ผ่าน** (main chunk 262 kB; Markdown chunk แยก 339 kB; ไม่มี warning) |
+| Frontend build | `npm run build` | **ผ่าน** (main chunk 264.61 kB; Markdown chunk แยก 339.15 kB; ไม่มี warning) |
 | Local runtime | `wrangler dev` + curl/Node scripts | **ผ่าน** health, SPA, auth, SSE, persistence, abort, timeout, output cap, headers |
 | D1 migration (local) | `npx wrangler d1 migrations apply DB --local` | **ผ่าน** 11 statements |
 | Deploy dry-run | `npx wrangler deploy --dry-run --env staging` | **ผ่าน** |
@@ -24,19 +24,19 @@
 | GitHub Actions CI | PR #1 (`.github/workflows/ci.yml`) | **ผ่าน** `verify` ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357)) |
 | Browser visual QA | Chrome/Safari/Firefox + mobile | **ยังไม่ทดสอบ / TODO (QA-01)** |
 
-## 2. Unit tests (Node, 26 tests)
+## 2. Unit tests (Node, 28 tests)
 
 คำสั่ง: `npm run test:unit`  
-ผล: `Test Files 5 passed (5)`, `Tests 26 passed (26)`, duration ~3–5s (ขึ้นกับ cache)
+ผล: `Test Files 5 passed (5)`, `Tests 28 passed (28)`, duration ~1.5–5s (ขึ้นกับ cache)
 
 | ไฟล์ | จำนวน | สิ่งที่ครอบคลุม |
 |---|---:|---|
 | `tests/unit/crypto.test.ts` | 4 | PBKDF2 round-trip, salt ไม่ซ้ำ, hash ผิดรูปแบบไม่ throw, SHA-256 known digest |
-| `tests/unit/validation.test.ts` | 9 | chat/rename schema, trim, ขนาด, UUID, title, catalog/allowlist/default, extra models |
+| `tests/unit/validation.test.ts` | 11 | chat/rename/register schema, password 8, invite 8 + uppercase, trim, ขนาด, UUID, title, catalog/allowlist/default, extra models |
 | `tests/unit/sse.test.ts` | 4 | event ถูกแบ่ง chunk, CRLF/multi-line data, event สุดท้ายไม่มี blank line, comment-only |
 | `tests/unit/providers.test.ts` | 5 | OpenAI request/stream/error mapping/no-key; Gemini role/system/thought filter (mock fetch ทั้งหมด) |
 | `tests/unit/output-budget.test.ts` | 4 | สะสม delta, ตัด delta ที่เกินเพดาน, คงสถานะ exhausted, normalize ค่าผิดรูปแบบ |
-| **รวม** | **26** | |
+| **รวม** | **28** | |
 
 > Unit tests ไม่เรียก OpenAI/Gemini จริง และไม่ได้ตรวจว่า model ID ยังใช้ได้กับบัญชีจริง
 
@@ -83,7 +83,7 @@ Test: `persists the partial assistant message when the client stops reading`
 | M-07 | **Abort กลาง stream** (`curl --max-time 0.18`) | ได้ 1,215 bytes ก่อนตัด; หลังรอ 2 วินาที พบ assistant `status=aborted` 207 chars |
 | M-08 | API security headers | `cache-control: no-store`, `x-content-type-options: nosniff`, `referrer-policy: strict-origin-when-cross-origin`, `x-frame-options: DENY`, `x-request-id` |
 | M-09 | Static security headers | CSP, `permissions-policy`, nosniff, frame deny, referrer policy ครบ |
-| M-10 | Secret scan ใน `dist/client` | ไม่พบ `dev-invite-code` / `OPENAI_API_KEY` / `GEMINI_API_KEY` (คำว่า `task-list`/`mask-type` ที่แมตช์ `sk-` ไม่ใช่ secret) |
+| M-10 | Secret scan ใน `dist/client` | ไม่พบ `DEV2026` / `STAGING_SIGNUP_CODE` / `OPENAI_API_KEY` / `GEMINI_API_KEY` (คำว่า `task-list`/`mask-type` ที่แมตช์ `sk-` ไม่ใช่ secret) |
 | M-11 | `wrangler d1 migrations apply DB --local` | สำเร็จ 11 statements |
 | M-12 | `wrangler deploy --dry-run --env staging` (ก่อน deploy จริง) | สำเร็จ; upload 880.55 KiB (gzip 147.72 KiB); ภายหลังได้ deploy จริงตาม M-16/M-21 |
 | M-13 | **Output cap** (ตั้ง `AI_MAX_OUTPUT_CHARS=120` → clamp เป็น 500 + prompt 200 chars) | หยุดที่ 500 chars · 41 events · `RESPONSE_LIMIT_REACHED` · ไม่มี `done` · persisted `status=error` 500 chars |
@@ -96,6 +96,8 @@ Test: `persists the partial assistant message when the client stops reading`
 | M-20 | **Staging abort** | ตัดที่ 1s · SSE 97 chars · persisted `status=aborted` 109 chars |
 | M-21 | **Deploy production จริง** | `https://ai-web.peerapatmatprasong.workers.dev` · version `bcb17774-fdf8-4e0b-8f52-4bdef92dd6f9` |
 | M-22 | **Production smoke** | health `production/database:ok` · `/` 200 · Markdown asset 200 · unauthenticated 401 · bad invite 403 · CSRF 403 · headers ครบ · D1 tables ครบ · users = 0 |
+| M-23 | **Staging auth 8 ตัว** | register 201 ด้วย password 8 + invite 8 (uppercase) · login 200 · invite 7 ตัว → 400 `VALIDATION_ERROR` · invite 8 ตัวผิด → 403 · chat 55 events/489 chars/`done` · ลบ test user แล้ว |
+| M-24 | **Auto deploy จาก GitHub** | push `main` → `.github/workflows/deploy.yml` รัน test + migrate + `wrangler deploy --env production` (ผลอยู่ใน Actions run ล่าสุด) |
 
 ### 4.1 Generation guardrails (HARD-01)
 
@@ -113,10 +115,10 @@ Test: `persists the partial assistant message when the client stops reading`
 
 ```text
 dist/client/index.html                     0.68 kB │ gzip:   0.43 kB
-dist/client/assets/index-O8KHdmsY.css     42.85 kB │ gzip:   8.38 kB
-dist/client/assets/index-BB21c37s.js     262.16 kB │ gzip:  80.35 kB
-dist/client/assets/Markdown-HhpVFRTl.js  339.15 kB │ gzip: 103.38 kB
-✓ built in ~22s
+dist/client/assets/index-C3KlgtOk.css     43.41 kB │ gzip:   8.48 kB
+dist/client/assets/index-i0U9hCVk.js     264.61 kB │ gzip:  80.84 kB
+dist/client/assets/Markdown-DsMjrzvO.js  339.15 kB │ gzip: 103.38 kB
+✓ built in 5.22s
 ```
 
 - **ผล:** ผ่าน
@@ -189,10 +191,11 @@ MOCK_DELAY_MS=200
 
 ## 9. หลักฐานใน repository
 
-- `tests/unit/**` — 26 unit tests (รวม `output-budget.test.ts`)
+- `tests/unit/**` — 28 unit tests (รวม `output-budget.test.ts` และ register validation)
 - `tests/integration/api.test.ts` — 16 integration tests (รวม abort)
-- `vitest.config.ts`, `vitest.workers.config.ts` — test configuration
-- `.github/workflows/ci.yml` — typecheck/lint/test/build; รันบน GitHub Actions ผ่านใน PR #1 ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357))
+- `vitest.config.ts`, `vitest.workers.config.ts` — test configuration (invite code `TEST2026`)
+- `.github/workflows/ci.yml` — typecheck/lint/test/build
+- `.github/workflows/deploy.yml` — auto deploy production เมื่อ push `main` (test + migrate + deploy)
 - `worker/routes/chat.ts` — SSE + abort persistence
 - `worker/routes/auth.ts`, `worker/middleware/auth.ts` — auth/CSRF
 
@@ -200,7 +203,7 @@ MOCK_DELAY_MS=200
 
 | Task | สถานะ | หมายเหตุ |
 |---|---|---|
-| TEST-01 | DONE | unit 26/26 |
+| TEST-01 | DONE | unit 28/28 |
 | TEST-02 | DONE | integration 16/16 |
 | API-02 | DONE | SSE + abort partial persistence มี automated test |
 | DEPLOY-01 | DONE | local deploy-equivalent ผ่าน |

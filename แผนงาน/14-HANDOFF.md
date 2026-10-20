@@ -1,6 +1,6 @@
 # 14 — HANDOFF (ส่งต่องาน)
 
-> อัปเดตล่าสุด: **2026-10-20** · เวลาโดยประมาณ 09:25 UTC
+> อัปเดตล่าสุด: **2026-10-20** · เวลาโดยประมาณ 10:00 UTC
 > ผู้รับช่วง: อ่านไฟล์นี้จบแล้วไปที่ Task ถัดไปได้ทันที
 
 ## 1. สถานะโปรเจกต์
@@ -9,14 +9,14 @@
 |---|---|
 | ชื่อโปรเจกต์ | Nova Chat / AI Web |
 | Repository | `/workspaces/Ai-web` |
-| Branch | `deploy/staging-production` → PR #1 (base `main`, ยังไม่ merge) |
-| Commit ล่าสุด | `ba30914` + commit อัปเดตเอกสารหลัง CI (ดู `git log`) |
+| Branch | `feat/8-char-invite-password-toggle` → PR #2 (base `main`) |
+| Commit ล่าสุด | `2bd5d76` (merge PR #1) + commit auth 8 ตัว/GitHub Actions |
 | Phase ปัจจุบัน | Phase 11–13: deployed staging/production; เหลือ live provider + browser QA |
-| สถานะโดยรวม | Deploy จริงแล้วทั้ง staging/production ด้วย Mock Provider; ยังไม่ทดสอบ provider จริง |
+| สถานะโดยรวม | Deploy จริงแล้วทั้ง staging/production ด้วย Mock Provider; auth 8 ตัว deploy staging แล้ว; production รอ auto deploy หลัง merge |
 | Staging | https://ai-web-staging.peerapatmatprasong.workers.dev |
 | Production | https://ai-web.peerapatmatprasong.workers.dev |
-| Git status | commit/push branch แล้ว · PR #1 เปิดอยู่ · CI `verify` ผ่าน · `main` ยังไม่ merge |
-| ลิงก์ | https://github.com/Beam091/Ai-web/pull/1 |
+| Git status | `main` มีโค้ดครบจาก PR #1 แล้ว · branch auth 8 ตัวพร้อมเปิด PR · GitHub Actions CD ตั้งค่าแล้ว |
+| ลิงก์ | https://github.com/Beam091/Ai-web |
 
 ## 2. สิ่งที่เสร็จแล้ว
 
@@ -25,25 +25,28 @@
 | SETUP-01/02 | Worker + Hono + Vite/React + Tailwind + health + assets | `worker/`, `src/`, `wrangler.jsonc` | typecheck/lint/build ผ่าน |
 | DB-01/02 | D1 schema, migrations, CRUD, ownership, context | `migrations/0001_init.sql`, `worker/db/queries.ts` | integration ผ่าน |
 | AUTH-01/02 | register/login/logout/me, session, CSRF, rate limit | `worker/routes/auth.ts`, `worker/middleware/auth.ts`, `worker/lib/crypto.ts` | integration ผ่าน |
+| AUTH-03 | password ขั้นต่ำ 8, invite 8 ตัว, ปุ่มแสดง/ซ่อนรหัส | `src/components/AuthScreen.tsx`, `src/components/Icons.tsx`, `worker/lib/validation.ts` | unit 2 + staging register/login ผ่าน |
 | PROV-01..04 | provider interface, OpenAI, Gemini, Mock, catalog | `worker/providers/*` | unit ผ่าน (mocked fetch) |
 | API-01..03 | `/api/chat` SSE, models, conversations | `worker/routes/*` | integration + curl ผ่าน |
 | UI-01..04 | Sidebar, chat, Markdown, auth screen, responsive | `src/**` | build/lint ผ่าน (ยังไม่ visual QA) |
-| TEST-01..03 | unit, integration, CI workflow | `tests/**`, `.github/workflows/ci.yml` | 26 + 16 ผ่าน |
+| TEST-01..03 | unit, integration, CI workflow | `tests/**`, `.github/workflows/ci.yml` | 28 + 16 ผ่าน |
 | HARD-01 | timeout + output cap | `worker/routes/chat.ts`, `worker/lib/output-budget.ts` | unit 4 + manual timeout/cap ผ่าน |
 | POLISH-01 | lazy Markdown/highlight | `src/components/MarkdownLazy.tsx`, `src/components/MessageBubble.tsx` | main 262 kB; chunk 339 kB; asset 200; ไม่มี warning |
 | DEPLOY-01 | local deploy-equivalent | `wrangler dev` + D1 local | health/register/chat/SPA ผ่าน |
 | DEPLOY-02 | deploy staging + production | `wrangler.jsonc`, D1 staging/prod | health/SPA/assets/auth/chat/persist/CSRF ผ่าน |
+| DEPLOY-04 | GitHub Actions auto deploy production | `.github/workflows/deploy.yml` | secrets ตั้งแล้ว; push `main` trigger test + migrate + deploy |
 | QA-03 | abort/timeout/cap บน staging | staging env ชั่วคราว | ผ่านทั้ง 3 กรณี (Mock provider) |
 | DOC-01/02/03 | แผนงาน 18 ไฟล์ + เอกสารหลัง deploy | `แผนงาน/**`, `README.md` | ตรวจกับ URL/ผลจริงแล้ว |
 
 **หลักฐานสำคัญ**
-- `npm test` → unit 26 passed, integration 16 passed
+- `npm test` → unit 28 passed, integration 16 passed
 - `npm run typecheck` / `npm run lint` / `npm run build` → ผ่าน
 - GitHub Actions `verify` บน PR #1 → success ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357))
 - `wrangler dev` + curl: health `status:ok database:ok`, login 200, chat SSE 54 delta + done, detail มี user+assistant `complete`
 - Abort test: integration test ผ่าน; manual curl ตัดที่ 0.18s → assistant `status=aborted` 207 chars ถูกบันทึกจริง
 - Guardrails: `AI_TIMEOUT_SECONDS=1` → `PROVIDER_TIMEOUT` ที่ ~1.07s; ตั้ง `AI_MAX_OUTPUT_CHARS=120` (clamp เป็น 500) → `RESPONSE_LIMIT_REACHED` ที่ 500 chars และ persisted `status=error`
 - Staging: register 201 (admin), cookie `HttpOnly/Secure/SameSite=Lax`, chat 55 events/492 chars/`done`, persist ครบ, CSRF 403
+- Staging auth 8 ตัว: register 201 ด้วย password `12345678` + invite 8 ตัว, login 200, invite 7 ตัว → 400 `VALIDATION_ERROR`, invite 8 ตัวผิด → 403, chat 55 events/489 chars/`done`; ลบ test user แล้ว (users/conversations/messages = 0)
 - Staging guardrails: cap 500 chars, timeout 53 chars, abort persisted 109 chars
 - Production: health `production/database:ok`, `/` 200, lazy asset 200, unauth 401, bad invite 403, CSRF 403, headers ครบ, D1 tables ครบ, users = 0
 
@@ -60,7 +63,7 @@
 - `แผนงาน/00`–`17` (18 ไฟล์)
 
 ### ไฟล์ local ที่ไม่ถูก commit
-- `.dev.vars` (มี `SIGNUP_CODE=dev-invite-code-123` สำหรับ local)
+- `.dev.vars` (มี `SIGNUP_CODE=DEV2026` สำหรับ local)
 - `แผนงาน/token` (mode 600; เก็บ Cloudflare/GitHub token, account ID และ signup codes ของ staging/production) — ถูก ignore
 - `.wrangler/` (local D1 state — มีผู้ใช้ทดสอบ `owner@example.com`)
 - `dist/`, `node_modules/`
@@ -70,7 +73,7 @@
 ```bash
 npm run typecheck   # ผ่าน (3 projects)
 npm run lint        # ผ่าน 0 warning
-npm test            # unit 26 passed; integration 16 passed
+npm test            # unit 28 passed; integration 16 passed
 npm run build       # สำเร็จ; main 262 kB + lazy Markdown chunk 339 kB; ไม่มี warning
 npx wrangler d1 migrations apply DB --local   # 11 commands สำเร็จ
 npx wrangler dev --port 8787                  # รันได้ (หยุดหลังทดสอบแล้ว)
@@ -81,7 +84,7 @@ curl /settings/profile                  # 200 (SPA fallback)
 
 ## 5. งานที่กำลังทำ
 
-_ไม่มีงานค้างกลางทาง_ — deploy staging/production และตรวจ smoke/guardrails ด้วย Mock provider เสร็จแล้ว งานที่เหลือต้องใช้ browser, API keys หรือการตัดสินใจเชิงนโยบาย
+กำลังรอ merge PR auth 8 ตัวเข้า `main` เพื่อให้ GitHub Actions deploy production และตรวจ smoke รอบสุดท้าย — งานที่เหลือหลังจบรอบนี้ต้องใช้ browser, API keys หรือการตัดสินใจเชิงนโยบาย
 
 ## 6. งานถัดไปที่ควรทำทันที
 
@@ -130,12 +133,13 @@ npm run typecheck && npm run lint && npm test && npm run build
 npm run dev
 ```
 
-- Local login สำหรับทดสอบ: ใช้อีเมลใหม่ + `SIGNUP_CODE` จาก `.dev.vars` (`dev-invite-code-123`)
-- Staging login: ใช้อีเมลใหม่ + `STAGING_SIGNUP_CODE` จาก `แผนงาน/token` (ห้าม commit/พิมพ์ค่านี้)
+- Local login สำหรับทดสอบ: ใช้อีเมลใหม่ + `SIGNUP_CODE` จาก `.dev.vars` (`DEV2026`, 8 ตัว)
+- Staging login: ใช้อีเมลใหม่ + `STAGING_SIGNUP_CODE` (8 ตัว) จาก `แผนงาน/token` (ห้าม commit; ส่งให้เจ้าของผ่านช่องทางส่วนตัวเมื่อจำเป็น)
+- Production login: ใช้ `PRODUCTION_SIGNUP_CODE` (8 ตัว) จาก `แผนงาน/token`; ผู้สมัครคนแรกได้ role `admin`
 - Production ยังไม่มีผู้ใช้; ผู้สมัครคนแรกจะได้ role `admin`
 - ถ้า local D1 หาย: `npm run db:migrate:local`
 - ถ้าต้องการเริ่ม local DB ใหม่: ลบ `.wrangler/state` (ระวังข้อมูลทดสอบหาย) แล้ว migrate ใหม่
-- Deploy ซ้ำ: `npm run deploy:staging` หรือ `npm run deploy:production` (ต้องมี `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID`)
+- Deploy ซ้ำ: push `main` เพื่อให้ GitHub Actions deploy production อัตโนมัติ หรือรัน `npm run deploy:staging` / `npm run deploy:production` ด้วยตนเอง (ต้องมี `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID`)
 
 ## 10. สิ่งที่ Agent คนถัดไปต้องระวัง
 
@@ -156,14 +160,17 @@ npm run dev
 - เพิ่ม provider adapters 3 ตัว + allowlist
 - เพิ่ม D1 schema/migrations + ownership
 - เพิ่ม UI ครบ flow หลัก + Markdown/streaming
-- เพิ่ม test 42 รายการ (26 unit + 16 integration) + CI + เอกสาร 18 ไฟล์
+- เพิ่ม test 44 รายการ (28 unit + 16 integration) + CI + เอกสาร 18 ไฟล์
 - แก้ abort persistence ด้วย `waitUntil` + เพิ่ม integration test + เขียน `08-TEST-REPORT.md`
 - เพิ่ม timeout/output cap (HARD-01) + unit test + manual verification
 - แยก Markdown/highlight เป็น lazy chunk (POLISH-01) ทำให้ main bundle เหลือ ~262 kB
 - สร้าง D1 staging/production (APAC), apply migration, ตั้ง `SIGNUP_CODE` และ deploy จริงทั้งสอง env
 - Staging ผ่าน flow smoke + abort/timeout/output cap (Mock); production ผ่าน health/SPA/auth guard/headers/D1 tables
 - อัปเดตเอกสาร 00/01/04/05/07/08/09/14/15 และ README ให้ตรงสถานะ deploy จริง
-- push branch `deploy/staging-production`, เปิด PR #1 และ CI `verify` ผ่าน
+- push branch `deploy/staging-production`, เปิด PR #1, CI `verify` ผ่าน และ merge เข้า `main` แล้ว
+- เพิ่ม auth 8 ตัว (password + invite) และปุ่มแสดง/ซ่อนรหัส; unit เพิ่มเป็น 28
+- เพิ่ม GitHub Actions CD `.github/workflows/deploy.yml` + secrets; push `main` จะ test, migrate D1 และ deploy production
+- เปลี่ยน `SIGNUP_CODE` staging/production เป็น 8 ตัวอักษร และ deploy staging ใหม่แล้ว
 
 ---
 

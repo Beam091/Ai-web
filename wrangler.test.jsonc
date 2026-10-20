@@ -14,7 +14,7 @@
   "vars": {
     "APP_ENV": "test",
     "DEFAULT_PROVIDER": "mock",
-    "SIGNUP_CODE": "test-invite-code",
+    "SIGNUP_CODE": "TEST2026",
     "CHAT_RATE_LIMIT": "100",
     "CHAT_RATE_WINDOW_MINUTES": "5",
     "LOGIN_RATE_LIMIT": "100",

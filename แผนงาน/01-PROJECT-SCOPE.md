@@ -20,7 +20,7 @@
 
 ### อยู่ใน scope
 
-- ระบบสมาชิก: สมัครด้วย **รหัสเชิญ**, เข้าสู่ระบบ, ออกจากระบบ, session cookie
+- ระบบสมาชิก: สมัครด้วย **รหัสเชิญ 8 ตัวอักษร**, รหัสผ่านขั้นต่ำ 8 ตัว, แสดง/ซ่อนรหัสขณะกรอก, session cookie
 - ผู้ใช้คนแรกเป็น `admin`, คนถัดไปเป็น `user` (ยังไม่มี Admin Dashboard)
 - Sidebar + New Chat + ประวัติ + เปลี่ยนชื่อ + ลบ
 - Chat แบบหลายรอบ, ส่ง context ย้อนหลังตาม budget
@@ -48,7 +48,7 @@
 
 | ID | ข้อกำหนด | สถานะ |
 |---|---|---|
-| FR-01 | สมัครสมาชิกด้วยอีเมล + รหัสผ่าน + รหัสเชิญ | DONE |
+| FR-01 | สมัครสมาชิกด้วยอีเมล + รหัสผ่าน (ขั้นต่ำ 8) + รหัสเชิญ (8 ตัว) | DONE |
 | FR-02 | เข้า/ออกระบบด้วย session cookie (HttpOnly, SameSite=Lax) | DONE |
 | FR-03 | ผู้ใช้เห็นเฉพาะบทสนทนาของตนเอง | DONE |
 | FR-04 | สร้างบทสนทนาใหม่เมื่อส่งข้อความแรก | DONE |
@@ -71,7 +71,7 @@
 - context สูงสุด 40 ข้อความ และ ~24,000 ตัวอักษร
 - request body ≤ 256 KB
 - Streaming ต้องเริ่มส่ง meta ภายในเวลาอันสั้น (ไม่รอคำตอบครบ)
-- Frontend main bundle ~262 KB (gzip ~80 KB) + lazy Markdown chunk ~339 KB (gzip ~103 KB); ไม่มี warning >500 KB
+- Frontend main bundle ~264.61 KB (gzip ~80.84 KB) + lazy Markdown chunk ~339.15 KB (gzip ~103.38 KB); ไม่มี warning >500 KB
 
 ### Security
 - API Key อยู่ฝั่ง Worker secrets เท่านั้น
@@ -111,7 +111,7 @@
 | ผู้ใช้เข้าถึงเฉพาะข้อมูลตัวเอง | ✅ | IDOR tests 4 กรณี |
 | Secrets ไม่ปรากฏใน frontend/Git | ✅ | `.gitignore`, secret scan ใน `dist/client`, ไม่มี secret ใน repo |
 | มี Error handling | ✅ | safe provider errors, error event, UI banner |
-| มี Tests ที่เหมาะสม | ✅ | 26 unit + 16 integration |
+| มี Tests ที่เหมาะสม | ✅ | 28 unit + 16 integration |
 | Deploy ตามขั้นตอนที่บันทึกได้ | ✅ | staging + production จริง; health/SPA/auth/chat/persist/CSRF/headers ผ่าน |
 | เอกสารสอดคล้องระบบจริง | ✅ | ตรวจกับโค้ดรอบนี้ |
 | Agent คนอื่นรับงานต่อได้ | ✅ | `14-HANDOFF.md` + prompt พร้อมใช้ |

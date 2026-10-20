@@ -24,7 +24,7 @@
 | Threat | ตัวอย่าง | Control ที่มี |
 |---|---|---|
 | Brute force login | เดารหัสผ่านซ้ำ ๆ | PBKDF2, rate limit ต่อ IP+email, ข้อความ error เหมือนกัน |
-| Invite code guessing | เดารหัสเชิญ | ค่า random ยาว, rate limit register, เปลี่ยน secret ได้ |
+| Invite code guessing | เดารหัสเชิญ | รหัสสุ่ม 8 ตัวอักษร (~40-bit hex), rate limit register 10 ครั้ง/15 นาที, เปลี่ยน secret ได้ |
 | Session theft | XSS/อุปกรณ์ถูกขโมย | HttpOnly, SameSite=Lax, Secure (non-dev), อายุ 7 วัน, logout revoke |
 | CSRF | ฟอร์มจากเว็บอื่นส่ง POST | SameSite=Lax + Origin/Host check + `Sec-Fetch-Site` |
 | IDOR | เปลี่ยน conversation id | ownership check ทุก query, คืน 404 |
@@ -159,7 +159,8 @@
 11. ไม่มี encryption at application layer — พึ่ง Cloudflare/D1
 12. Prompt injection: ผู้ใช้อาจสั่งโมเดลให้ทำสิ่งที่ไม่พึงประสงค์; ปัจจุบันไม่มี tool/function calling จึงยังไม่มีความเสี่ยงระดับ tool execution แต่เนื้อหาที่โมเดลตอบอาจไม่ถูกต้อง
 13. ไม่มี data residency/region control
-14. Timeout/cap ถูกทดสอบใน local แล้ว แต่ยังไม่ได้ยืนยันกับ provider จริงหรือบน staging
+14. Timeout/cap ถูกทดสอบบน staging ด้วย Mock แล้ว แต่ยังไม่ได้ยืนยันกับ provider จริง
+15. รหัสผ่านขั้นต่ำ 8 ตัวอักษรตาม requirement; ถือว่าอ่อนกว่าค่าแนะนำทั่วไป ควรใช้ 12+ เมื่อเปิดผู้ใช้จริงหรือเพิ่ม passphrase policy
 
 ## 12. Checklist ก่อนเปิดให้ผู้ใช้จริง
 

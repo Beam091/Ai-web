@@ -14,7 +14,7 @@
 
 | ชื่อ | จำเป็น | Secret | ค่าเริ่มต้น / ตัวอย่าง | ใช้ทำอะไร |
 |---|---|---|---|---|
-| `SIGNUP_CODE` | **ใช่** (ถ้าจะสมัครสมาชิก) | ✅ ใช่ | `replace-with-a-long-random-invite-code` | รหัสเชิญสำหรับ `POST /api/auth/register`; ถ้าไม่ตั้งจะปิดรับสมัคร (403) |
+| `SIGNUP_CODE` | **ใช่** (ถ้าจะสมัครสมาชิก) | ✅ ใช่ | `REPLACE8` (8 ตัวอักษร) | รหัสเชิญสำหรับ `POST /api/auth/register`; ต้องยาว 8 ตัวและ normalize เป็นตัวพิมพ์ใหญ่; ถ้าไม่ตั้งจะปิดรับสมัคร (403) |
 | `OPENAI_API_KEY` | ไม่ (ถ้าใช้ OpenAI) | ✅ ใช่ | `sk-replace-me` | เรียก OpenAI; ถ้าไม่ตั้ง provider จะแสดง unavailable |
 | `GEMINI_API_KEY` | ไม่ (ถ้าใช้ Gemini) | ✅ ใช่ | `replace-me` | เรียก Gemini; ถ้าไม่ตั้ง provider จะ unavailable |
 | `APP_ENV` | ควรตั้ง | ❌ ไม่ | `development` / `staging` / `production` | ใช้ตัดสิน cookie `Secure` (production/staging = true) และแสดงใน health |
@@ -38,6 +38,8 @@
 | Session TTL 7 วัน | `worker/middleware/auth.ts` | เปลี่ยนได้ในโค้ด |
 | PBKDF2 100,000 รอบ | `worker/lib/crypto.ts` | ดู RISK-01 |
 | ข้อความสูงสุด 8,000 ตัวอักษร | `worker/lib/validation.ts` | ตรงกับ frontend |
+| รหัสผ่าน 8–200 ตัวอักษร | `worker/lib/validation.ts` | ตาม requirement รอบนี้; 8 ตัวเป็นขั้นต่ำ |
+| รหัสเชิญ 8 ตัวอักษร | `worker/lib/validation.ts` | normalize เป็นตัวพิมพ์ใหญ่ทั้ง client/server |
 | Context 40 ข้อความ / 24,000 ตัวอักษร | `worker/routes/chat.ts` | คนละค่ากับเพดานคำตอบ |
 | คำตอบสูงสุด 32,000 ตัวอักษร (default) | `worker/routes/chat.ts` + `AI_MAX_OUTPUT_CHARS` | ปรับผ่าน env ได้ |
 | Timeout 90 วินาที (default) | `worker/routes/chat.ts` + `AI_TIMEOUT_SECONDS` | ปรับผ่าน env ได้ |
@@ -56,7 +58,7 @@ cp .env.example .dev.vars
 
 ```dotenv
 APP_ENV=development
-SIGNUP_CODE=dev-invite-code-change-me
+SIGNUP_CODE=DEV2026
 DEFAULT_PROVIDER=mock
 AI_TIMEOUT_SECONDS=90
 AI_MAX_OUTPUT_CHARS=32000
@@ -116,7 +118,7 @@ npx wrangler secret list --env production
 
 ```dotenv
 APP_ENV=production
-SIGNUP_CODE=<random-48-hex-chars>
+SIGNUP_CODE=<8-char-random-code>
 OPENAI_API_KEY=sk-<your-key>
 GEMINI_API_KEY=<your-key>
 DEFAULT_PROVIDER=openai

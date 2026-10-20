@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
 export const EMAIL_MAX = 254;
-export const PASSWORD_MIN = 10;
+export const PASSWORD_MIN = 8;
 export const PASSWORD_MAX = 200;
+export const INVITE_CODE_LENGTH = 8;
 export const MESSAGE_MAX = 8_000;
 export const TITLE_MAX = 80;
 
@@ -22,7 +23,11 @@ export const passwordSchema = z
 export const registerSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  inviteCode: z.string().min(1, 'กรุณากรอกรหัสเชิญ').max(200),
+  inviteCode: z
+    .string()
+    .trim()
+    .length(INVITE_CODE_LENGTH, `รหัสเชิญต้องมี ${INVITE_CODE_LENGTH} ตัวอักษร`)
+    .transform((value) => value.toUpperCase()),
 });
 
 export const loginSchema = z.object({

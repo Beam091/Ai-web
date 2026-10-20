@@ -54,8 +54,8 @@ Request:
 ```json
 {
   "email": "user@example.com",
-  "password": "อย่างน้อย 10 ตัวอักษร",
-  "inviteCode": "<SIGNUP_CODE>"
+  "password": "อย่างน้อย 8 ตัวอักษร",
+  "inviteCode": "AB12CD34"
 }
 ```
 
@@ -70,7 +70,8 @@ Response `201`:
 - ผู้ใช้คนแรกของระบบได้ `admin`, ถัดไปได้ `user`
 - ตั้ง cookie `ai_session` (HttpOnly, SameSite=Lax, Secure ตาม APP_ENV, 7 วัน)
 - ถ้าไม่ได้ตั้ง `SIGNUP_CODE` → 403
-- รหัสผ่าน 10–200 ตัวอักษร; อีเมลถูก lowercase
+- รหัสเชิญต้องมี **8 ตัวอักษร** (ตัวพิมพ์เล็ก/ใหญ่ได้; server normalize เป็นตัวพิมพ์ใหญ่); ผิดความยาว → 400 `VALIDATION_ERROR`
+- รหัสผ่าน 8–200 ตัวอักษร; อีเมลถูก lowercase
 
 ### `POST /api/auth/login`
 

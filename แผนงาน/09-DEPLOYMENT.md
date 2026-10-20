@@ -75,7 +75,7 @@ npx wrangler secret put OPENAI_API_KEY --env production
 npx wrangler secret put GEMINI_API_KEY --env production
 ```
 
-- `SIGNUP_CODE` ควรสุ่มยาว เช่น `openssl rand -hex 24`
+- `SIGNUP_CODE` ต้องเป็น **8 ตัวอักษร** (ระบบ normalize เป็นตัวพิมพ์ใหญ่) เช่น `openssl rand -hex 4 | tr 'a-f' 'A-F'`
 - ห้ามใส่ secret ใน `wrangler.jsonc` หรือ commit
 - ตัวแปรที่ไม่ลับ (rate limit, `DEFAULT_PROVIDER`, `AI_TIMEOUT_SECONDS`, `AI_MAX_OUTPUT_CHARS`) ใส่ใน `vars` ของ config ได้
 
@@ -195,6 +195,22 @@ npx wrangler d1 time-travel restore DB --timestamp <ISO-8601> --env production
 - หมุน key ที่ provider แล้ว `wrangler secret put ...` ใหม่
 - การ rollback code ไม่ย้อน secret โดยอัตโนมัติ
 
+## 6.5 Auto deploy จาก GitHub (ตั้งค่าแล้ว)
+
+Workflow `.github/workflows/deploy.yml` ทำงานเมื่อ push เข้า `main` หรือกด `workflow_dispatch`:
+
+1. `npm ci`
+2. typecheck / lint / unit + integration tests / build
+3. `npx wrangler d1 migrations apply DB --remote --env production`
+4. `npx wrangler deploy --env production`
+
+GitHub repository secrets ที่ตั้งไว้:
+
+- `CLOUDFLARE_API_TOKEN` — token ที่ใช้ deploy (ไม่ปรากฏใน repo)
+- `CLOUDFLARE_ACCOUNT_ID`
+
+ข้อจำกัด: **Cloudflare Workers Builds Git integration** (หน้า Settings > Builds) ต้องติดตั้ง Cloudflare GitHub App ผ่าน dashboard และใช้ user-scoped token สำหรับ Builds API; token แบบ account-owned ที่ใช้อยู่นี้เรียก Builds API ไม่ได้ (`Invalid token`) จึงใช้ GitHub Actions เป็นตัว deploy อัตโนมัติแทน และยังสามารถเชื่อม Workers Builds ภายหลังได้โดยไม่กระทบ workflow นี้
+
 ## 7. Troubleshooting
 
 | อาการ | สาเหตุที่เป็นไปได้ | วิธีแก้ |
@@ -218,6 +234,7 @@ npx wrangler d1 time-travel restore DB --timestamp <ISO-8601> --env production
 - [x] รัน migrations + deploy staging
 - [x] deploy production
 - [x] ทดสอบ health/SPA/asset/auth guard/CSRF/security headers/chat บน staging
+- [x] ตั้ง GitHub Actions auto deploy ไป production เมื่อ push `main`
 - [ ] ตัดสินใจ custom domain
 - [ ] ตั้ง `OPENAI_API_KEY` / `GEMINI_API_KEY` แล้วเปลี่ยน `DEFAULT_PROVIDER`
 - [ ] อนุมัติค่าใช้จ่าย/เพดาน provider และตั้ง billing limit/alert
@@ -227,6 +244,6 @@ npx wrangler d1 time-travel restore DB --timestamp <ISO-8601> --env production
 ## 9. สิ่งที่ยังไม่ได้ทำในเอกสารนี้
 
 - ยังไม่มี live provider test (OpenAI/Gemini)
-- ยังไม่มี CI/CD อัตโนมัติไปยัง Cloudflare (มีแค่ CI ตรวจคุณภาพ)
+- ใช้ GitHub Actions เป็น CD; ยังไม่ได้เชื่อม Cloudflare Workers Builds ผ่าน GitHub App
 - ยังไม่มี custom domain/access policy
 - Production ยังไม่มีผู้ใช้ — ผู้สมัครคนแรกจะได้ role `admin`
