@@ -252,4 +252,4 @@
 
 **เหตุผลที่เลือก:** ทำงานได้ทันทีด้วย token ที่มี, เก็บ secret ใน GitHub Secrets, ตรวจ test ก่อน deploy, ไม่ผูกกับ dashboard state
 **ข้อเสีย:** ไม่มี preview build อัตโนมัติต่อ PR และยังไม่เห็น build logs ใน Cloudflare dashboard
-**ทดสอบแล้ว:** ใช่หลัง push `main` — ดู Actions run `Deploy production`
+**ทดสอบแล้ว:** ใช่ — merge PR #2 แล้ว `Deploy production` run 39402760396 success

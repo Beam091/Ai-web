@@ -16,7 +16,9 @@
   - `.github/workflows/deploy.yml`: push `main` หรือ `workflow_dispatch` → typecheck/lint/test/build → D1 migration production → `wrangler deploy --env production`
   - ตั้ง GitHub repository secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
   - merge PR #1 เข้า `main` แล้ว commit `2bd5d76` เพื่อให้โค้ดปรากฏใน repository
+  - เปิด PR #2, CI ผ่าน (run 39402645016), merge เข้า `main` (`77603ef`) และ `Deploy production` ผ่าน (run 39402760396); production version `bf6179c0-d818-410a-add2-63775a5ade31`
 - **หลักฐาน staging auth 8 ตัว**: register 201, login 200, invite 7 ตัว → 400, invite 8 ตัวผิด → 403, chat 55 events/489 chars/`done`; ลบข้อมูลทดสอบแล้ว
+- **หลักฐาน production auth 8 ตัว**: index 200, asset 200 มีปุ่มแสดงรหัสผ่าน, register 201 admin, login 200, invite 7 ตัว → 400, invite 8 ตัวผิด → 403, chat 56 events/496 chars/`done`; ลบข้อมูลทดสอบแล้ว
 
 ### Changed
 

@@ -34,7 +34,7 @@
 | TEST-03 | CI workflow (typecheck/lint/test/build) | P1 | `.github/workflows/ci.yml`; PR #1 run `39400469357` ผ่าน |
 | DEPLOY-01 | Local deploy-equivalent verification | P0 | `wrangler dev` + local D1 + curl ผ่าน |
 | DEPLOY-02 | Deploy staging + production จริง | P0 | staging + production; health/SPA/flow ผ่าน |
-| DEPLOY-04 | Auto deploy จาก GitHub ไป production | P0 | `.github/workflows/deploy.yml`; secrets ตั้งใน GitHub; push `main` trigger |
+| DEPLOY-04 | Auto deploy จาก GitHub ไป production | P0 | `.github/workflows/deploy.yml`; secrets ตั้งใน GitHub; deploy run 39402760396 success |
 | DOC-02 | Security/deployment/API/DB docs | P0 | เอกสารตรงกับโค้ด |
 | DOC-03 | อัปเดตเอกสารหลัง deploy จริง | P1 | มี URL, version, D1 IDs และผลตรวจจริงใน `09`/`08` |
 | QA-03 | ทดสอบ abort/timeout/output cap บน staging | P1 | ผ่านทั้ง 3 กรณีด้วย Mock provider |

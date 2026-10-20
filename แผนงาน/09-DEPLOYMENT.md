@@ -3,7 +3,8 @@
 > อัปเดต: 2026-10-20
 > **สถานะ: deploy จริงแล้วทั้ง staging และ production (Mock provider เท่านั้น)**
 > - Staging: https://ai-web-staging.peerapatmatprasong.workers.dev
-> - Production: https://ai-web.peerapatmatprasong.workers.dev
+> - Production: https://ai-web.peerapatmatprasong.workers.dev · version `bf6179c0-d818-410a-add2-63775a5ade31`
+> - push `main` → GitHub Actions deploy production อัตโนมัติ
 > - ยังไม่มี live provider test (ไม่มี OpenAI/Gemini keys) และยังไม่มี custom domain
 
 ## 1. สิ่งที่ต้องมีก่อนเริ่ม
@@ -208,6 +209,10 @@ GitHub repository secrets ที่ตั้งไว้:
 
 - `CLOUDFLARE_API_TOKEN` — token ที่ใช้ deploy (ไม่ปรากฏใน repo)
 - `CLOUDFLARE_ACCOUNT_ID`
+
+หมายเหตุ: workflow ใช้ `paths-ignore` สำหรับ `**/*.md` และ `แผนงาน/**` เพื่อไม่ deploy เมื่อแก้เอกสารเท่านั้น
+
+ผลรันจริง: merge PR #2 (`77603ef`) → `Deploy production` [run 39402760396](https://github.com/Beam091/Ai-web/actions/runs/39402760396) success; production version `bf6179c0-d818-410a-add2-63775a5ade31`
 
 ข้อจำกัด: **Cloudflare Workers Builds Git integration** (หน้า Settings > Builds) ต้องติดตั้ง Cloudflare GitHub App ผ่าน dashboard และใช้ user-scoped token สำหรับ Builds API; token แบบ account-owned ที่ใช้อยู่นี้เรียก Builds API ไม่ได้ (`Invalid token`) จึงใช้ GitHub Actions เป็นตัว deploy อัตโนมัติแทน และยังสามารถเชื่อม Workers Builds ภายหลังได้โดยไม่กระทบ workflow นี้
 

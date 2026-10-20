@@ -1,6 +1,6 @@
 # 08 — TEST REPORT (ผลทดสอบจริง)
 
-> อัปเดตล่าสุด: **2026-10-20 ~09:45 UTC**
+> อัปเดตล่าสุด: **2026-10-20 ~09:47 UTC**
 > สภาพแวดล้อม: Linux / Node `v24.21.0` / npm `11.19.0` / Wrangler `4.151.2` / Vitest `4.1.12`
 > หลักการ: บันทึกเฉพาะผลที่ **รันจริง** — งานที่ยังไม่ได้รันจะอยู่ในหัวข้อ “ยังไม่ทดสอบ” และห้ามถือว่าผ่าน
 
@@ -20,8 +20,10 @@
 | Staging smoke | health/SPA/assets/register/login/chat/persist/CSRF/headers | **ผ่าน** |
 | Staging guardrails | abort/timeout/output cap | **ผ่าน** (Mock provider) |
 | Production smoke | health/SPA/assets/auth guard/CSRF/headers/D1 tables | **ผ่าน** |
+| Production auth 8 ตัว | register/login/invite validation/chat | **ผ่าน** |
 | Live OpenAI/Gemini | API keys | **ยังไม่ทดสอบ / BLOCKED** |
-| GitHub Actions CI | PR #1 (`.github/workflows/ci.yml`) | **ผ่าน** `verify` ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357)) |
+| GitHub Actions CI | PR #2 (`.github/workflows/ci.yml`) | **ผ่าน** `verify` ([run 39402645016](https://github.com/Beam091/Ai-web/actions/runs/39402645016)) |
+| GitHub Actions CD | push `main` (`.github/workflows/deploy.yml`) | **ผ่าน** `Deploy production` ([run 39402760396](https://github.com/Beam091/Ai-web/actions/runs/39402760396)) |
 | Browser visual QA | Chrome/Safari/Firefox + mobile | **ยังไม่ทดสอบ / TODO (QA-01)** |
 
 ## 2. Unit tests (Node, 28 tests)
@@ -97,7 +99,8 @@ Test: `persists the partial assistant message when the client stops reading`
 | M-21 | **Deploy production จริง** | `https://ai-web.peerapatmatprasong.workers.dev` · version `bcb17774-fdf8-4e0b-8f52-4bdef92dd6f9` |
 | M-22 | **Production smoke** | health `production/database:ok` · `/` 200 · Markdown asset 200 · unauthenticated 401 · bad invite 403 · CSRF 403 · headers ครบ · D1 tables ครบ · users = 0 |
 | M-23 | **Staging auth 8 ตัว** | register 201 ด้วย password 8 + invite 8 (uppercase) · login 200 · invite 7 ตัว → 400 `VALIDATION_ERROR` · invite 8 ตัวผิด → 403 · chat 55 events/489 chars/`done` · ลบ test user แล้ว |
-| M-24 | **Auto deploy จาก GitHub** | push `main` → `.github/workflows/deploy.yml` รัน test + migrate + `wrangler deploy --env production` (ผลอยู่ใน Actions run ล่าสุด) |
+| M-24 | **Auto deploy จาก GitHub** | merge PR #2 (`77603ef`) → `Deploy production` [run 39402760396](https://github.com/Beam091/Ai-web/actions/runs/39402760396) success; production version `bf6179c0-d818-410a-add2-63775a5ade31` |
+| M-25 | **Production auth 8 ตัว** | index 200 · asset 200 (มีข้อความปุ่มแสดงรหัสผ่าน) · register 201 admin · login 200 · invite 7 ตัว → 400 `VALIDATION_ERROR` · invite 8 ตัวผิด → 403 · chat 56 events/496 chars/`done` · ลบ test user แล้ว |
 
 ### 4.1 Generation guardrails (HARD-01)
 
@@ -208,6 +211,7 @@ MOCK_DELAY_MS=200
 | API-02 | DONE | SSE + abort partial persistence มี automated test |
 | DEPLOY-01 | DONE | local deploy-equivalent ผ่าน |
 | DEPLOY-02 | DONE | deploy staging + production จริงและตรวจ health/SPA/flow |
+| DEPLOY-04 | DONE | GitHub Actions deploy production สำเร็จ (run 39402760396) |
 | DOC-03 | DONE | เอกสารมี URL/version/ผลตรวจหลัง deploy |
 | QA-03 | DONE | abort/timeout/cap บน staging ผ่าน (Mock provider) |
 | QA-01 | TODO | ต้องมี browser |

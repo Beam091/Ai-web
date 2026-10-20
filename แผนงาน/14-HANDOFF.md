@@ -1,6 +1,6 @@
 # 14 — HANDOFF (ส่งต่องาน)
 
-> อัปเดตล่าสุด: **2026-10-20** · เวลาโดยประมาณ 10:00 UTC
+> อัปเดตล่าสุด: **2026-10-20** · เวลาโดยประมาณ 09:46 UTC
 > ผู้รับช่วง: อ่านไฟล์นี้จบแล้วไปที่ Task ถัดไปได้ทันที
 
 ## 1. สถานะโปรเจกต์
@@ -9,14 +9,14 @@
 |---|---|
 | ชื่อโปรเจกต์ | Nova Chat / AI Web |
 | Repository | `/workspaces/Ai-web` |
-| Branch | `feat/8-char-invite-password-toggle` → PR #2 (base `main`) |
-| Commit ล่าสุด | `2bd5d76` (merge PR #1) + commit auth 8 ตัว/GitHub Actions |
+| Branch | `main` (merge PR #2 แล้ว) |
+| Commit ล่าสุด | `77603ef` (merge PR #2: auth 8 ตัว + GitHub Actions CD) |
 | Phase ปัจจุบัน | Phase 11–13: deployed staging/production; เหลือ live provider + browser QA |
-| สถานะโดยรวม | Deploy จริงแล้วทั้ง staging/production ด้วย Mock Provider; auth 8 ตัว deploy staging แล้ว; production รอ auto deploy หลัง merge |
+| สถานะโดยรวม | Deploy จริงแล้วทั้ง staging/production ด้วย Mock Provider; auth 8 ตัว deploy สำเร็จทั้งสอง env ผ่าน GitHub Actions |
 | Staging | https://ai-web-staging.peerapatmatprasong.workers.dev |
-| Production | https://ai-web.peerapatmatprasong.workers.dev |
-| Git status | `main` มีโค้ดครบจาก PR #1 แล้ว · branch auth 8 ตัวพร้อมเปิด PR · GitHub Actions CD ตั้งค่าแล้ว |
-| ลิงก์ | https://github.com/Beam091/Ai-web |
+| Production | https://ai-web.peerapatmatprasong.workers.dev (version `bf6179c0-d818-410a-add2-63775a5ade31`) |
+| Git status | `main` สะอาดหลัง merge PR #2 · GitHub Actions CD ทำงานอัตโนมัติแล้ว |
+| ลิงก์ | https://github.com/Beam091/Ai-web/pull/2 |
 
 ## 2. สิ่งที่เสร็จแล้ว
 
@@ -41,7 +41,8 @@
 **หลักฐานสำคัญ**
 - `npm test` → unit 28 passed, integration 16 passed
 - `npm run typecheck` / `npm run lint` / `npm run build` → ผ่าน
-- GitHub Actions `verify` บน PR #1 → success ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357))
+- GitHub Actions `verify` บน PR #2 → success ([run 39402645016](https://github.com/Beam091/Ai-web/actions/runs/39402645016))
+- GitHub Actions `Deploy production` หลัง merge PR #2 → success ([run 39402760396](https://github.com/Beam091/Ai-web/actions/runs/39402760396)); production version `bf6179c0-d818-410a-add2-63775a5ade31`
 - `wrangler dev` + curl: health `status:ok database:ok`, login 200, chat SSE 54 delta + done, detail มี user+assistant `complete`
 - Abort test: integration test ผ่าน; manual curl ตัดที่ 0.18s → assistant `status=aborted` 207 chars ถูกบันทึกจริง
 - Guardrails: `AI_TIMEOUT_SECONDS=1` → `PROVIDER_TIMEOUT` ที่ ~1.07s; ตั้ง `AI_MAX_OUTPUT_CHARS=120` (clamp เป็น 500) → `RESPONSE_LIMIT_REACHED` ที่ 500 chars และ persisted `status=error`
@@ -49,6 +50,7 @@
 - Staging auth 8 ตัว: register 201 ด้วย password `12345678` + invite 8 ตัว, login 200, invite 7 ตัว → 400 `VALIDATION_ERROR`, invite 8 ตัวผิด → 403, chat 55 events/489 chars/`done`; ลบ test user แล้ว (users/conversations/messages = 0)
 - Staging guardrails: cap 500 chars, timeout 53 chars, abort persisted 109 chars
 - Production: health `production/database:ok`, `/` 200, lazy asset 200, unauth 401, bad invite 403, CSRF 403, headers ครบ, D1 tables ครบ, users = 0
+- Production auth 8 ตัว: index 200, asset 200 (มีข้อความปุ่มแสดงรหัสผ่าน), register 201 (admin), login 200, invite 7 ตัว → 400 `VALIDATION_ERROR`, invite 8 ตัวผิด → 403, chat 56 events/496 chars/`done`; ลบ test user แล้ว (users/conversations/messages = 0)
 
 ## 3. ไฟล์ที่สร้าง/แก้ไขล่าสุด
 
@@ -84,7 +86,7 @@ curl /settings/profile                  # 200 (SPA fallback)
 
 ## 5. งานที่กำลังทำ
 
-กำลังรอ merge PR auth 8 ตัวเข้า `main` เพื่อให้ GitHub Actions deploy production และตรวจ smoke รอบสุดท้าย — งานที่เหลือหลังจบรอบนี้ต้องใช้ browser, API keys หรือการตัดสินใจเชิงนโยบาย
+_ไม่มีงานค้างกลางทางในรอบนี้_ — merge PR #2, GitHub Actions deploy production และ smoke auth 8 ตัวบน production เสร็จแล้ว งานที่เหลือต้องใช้ browser, API keys หรือการตัดสินใจเชิงนโยบาย
 
 ## 6. งานถัดไปที่ควรทำทันที
 
@@ -171,6 +173,8 @@ npm run dev
 - เพิ่ม auth 8 ตัว (password + invite) และปุ่มแสดง/ซ่อนรหัส; unit เพิ่มเป็น 28
 - เพิ่ม GitHub Actions CD `.github/workflows/deploy.yml` + secrets; push `main` จะ test, migrate D1 และ deploy production
 - เปลี่ยน `SIGNUP_CODE` staging/production เป็น 8 ตัวอักษร และ deploy staging ใหม่แล้ว
+- เปิด PR #2, CI ผ่าน, merge เข้า `main` (`77603ef`) และ GitHub Actions deploy production สำเร็จ
+- ตรวจ production smoke: health/SPA/asset/auth 8 ตัว/login/chat/validation ผ่าน และลบข้อมูลทดสอบแล้ว
 
 ---
 

@@ -41,8 +41,8 @@
 | รายการ | ค่า |
 |---|---|
 | Working directory | `/workspaces/Ai-web` |
-| Branch | `main` (merge PR #1 แล้ว) + branch `feat/8-char-invite-password-toggle` สำหรับ auth 8 ตัว |
-| Commit ล่าสุด | `2bd5d76` (merge PR #1) + commit auth 8 ตัว/GitHub Actions (ดู `git log`) |
+| Branch | `main` (merge PR #2 แล้ว) |
+| Commit ล่าสุด | `77603ef` (merge PR #2: auth 8 ตัว + GitHub Actions CD) |
 | Runtime | Cloudflare Workers (workerd), `compatibility_date = 2026-10-01` |
 | Frontend | React 19 + TypeScript + Vite 7 + Tailwind CSS 4 |
 | Backend | Hono 4 บน Worker (`worker/index.ts`) |
