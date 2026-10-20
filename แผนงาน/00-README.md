@@ -42,7 +42,7 @@
 |---|---|
 | Working directory | `/workspaces/Ai-web` |
 | Branch | `main` (merge PR #2 แล้ว) |
-| Commit ล่าสุด | `77603ef` (merge PR #2: auth 8 ตัว + GitHub Actions CD) |
+| Commit merge ล่าสุด | `77603ef` (merge PR #2: auth 8 ตัว + GitHub Actions CD; docs ตามหลัง) |
 | Runtime | Cloudflare Workers (workerd), `compatibility_date = 2026-10-01` |
 | Frontend | React 19 + TypeScript + Vite 7 + Tailwind CSS 4 |
 | Backend | Hono 4 บน Worker (`worker/index.ts`) |

@@ -10,7 +10,7 @@
 | ชื่อโปรเจกต์ | Nova Chat / AI Web |
 | Repository | `/workspaces/Ai-web` |
 | Branch | `main` (merge PR #2 แล้ว) |
-| Commit ล่าสุด | `77603ef` (merge PR #2: auth 8 ตัว + GitHub Actions CD) |
+| Commit merge ล่าสุด | `77603ef` (merge PR #2: auth 8 ตัว + GitHub Actions CD; docs ตามหลัง) |
 | Phase ปัจจุบัน | Phase 11–13: deployed staging/production; เหลือ live provider + browser QA |
 | สถานะโดยรวม | Deploy จริงแล้วทั้ง staging/production ด้วย Mock Provider; auth 8 ตัว deploy สำเร็จทั้งสอง env ผ่าน GitHub Actions |
 | Staging | https://ai-web-staging.peerapatmatprasong.workers.dev |
