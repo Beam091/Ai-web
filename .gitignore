@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.wrangler/
+.mf/
+
+# Local environment / secrets — NEVER commit
+.dev.vars
+.env
+.env.*
+!.env.example
+
+# One-off credential handoff files — NEVER commit
+แผนงาน/token
+แผนงาน/token.*
+แผนงาน/*.token
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Coverage
+coverage/

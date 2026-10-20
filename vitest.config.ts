@@ -1,0 +1,10 @@
+import { defineConfig } from 'vitest/config';
+
+/** Pure unit tests run in Node; the Worker integration suite has its own config. */
+export default defineConfig({
+  test: {
+    name: 'unit',
+    environment: 'node',
+    include: ['tests/unit/**/*.test.ts'],
+  },
+});

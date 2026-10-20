@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ai-web-test",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ai-web-test",
+      "database_id": "ai-web-test-local",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "APP_ENV": "test",
+    "DEFAULT_PROVIDER": "mock",
+    "SIGNUP_CODE": "test-invite-code",
+    "CHAT_RATE_LIMIT": "100",
+    "CHAT_RATE_WINDOW_MINUTES": "5",
+    "LOGIN_RATE_LIMIT": "100",
+    "LOGIN_RATE_WINDOW_MINUTES": "15",
+    "AI_TIMEOUT_SECONDS": "90",
+    "AI_MAX_OUTPUT_CHARS": "32000"
+  }
+}
