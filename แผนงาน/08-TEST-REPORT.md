@@ -21,6 +21,7 @@
 | Staging guardrails | abort/timeout/output cap | **ผ่าน** (Mock provider) |
 | Production smoke | health/SPA/assets/auth guard/CSRF/headers/D1 tables | **ผ่าน** |
 | Live OpenAI/Gemini | API keys | **ยังไม่ทดสอบ / BLOCKED** |
+| GitHub Actions CI | PR #1 (`.github/workflows/ci.yml`) | **ผ่าน** `verify` ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357)) |
 | Browser visual QA | Chrome/Safari/Firefox + mobile | **ยังไม่ทดสอบ / TODO (QA-01)** |
 
 ## 2. Unit tests (Node, 26 tests)
@@ -191,7 +192,7 @@ MOCK_DELAY_MS=200
 - `tests/unit/**` — 26 unit tests (รวม `output-budget.test.ts`)
 - `tests/integration/api.test.ts` — 16 integration tests (รวม abort)
 - `vitest.config.ts`, `vitest.workers.config.ts` — test configuration
-- `.github/workflows/ci.yml` — typecheck/lint/test/build (ยังไม่รันบน GitHub Actions)
+- `.github/workflows/ci.yml` — typecheck/lint/test/build; รันบน GitHub Actions ผ่านใน PR #1 ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357))
 - `worker/routes/chat.ts` — SSE + abort persistence
 - `worker/routes/auth.ts`, `worker/middleware/auth.ts` — auth/CSRF
 

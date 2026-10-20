@@ -22,6 +22,7 @@
 - `wrangler.jsonc` ใช้ D1 ID จริง; top-level ชี้ staging เพื่อความปลอดภัย ส่วน production ใช้ `--env production`
 - `README.md`, `แผนงาน/00`, `01`, `04`, `05`, `07`, `08`, `09`, `14` อัปเดต URL/version/ผลตรวจ/สถานะจริง
 - `.gitignore` ignore `แผนงาน/token` และไฟล์ credential ชั่วคราว
+- push branch `deploy/staging-production`, เปิด PR #1 และ GitHub Actions `verify` ผ่าน (`run 39400469357`)
 
 ### Known limitations (ณ 0.2.0)
 

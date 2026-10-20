@@ -9,13 +9,14 @@
 |---|---|
 | ชื่อโปรเจกต์ | Nova Chat / AI Web |
 | Repository | `/workspaces/Ai-web` |
-| Branch | `main` |
-| Commit ล่าสุด | commit รอบ deploy บน branch ที่ push ขึ้น GitHub (ดู `git log`/`git branch -vv`) |
+| Branch | `deploy/staging-production` → PR #1 (base `main`, ยังไม่ merge) |
+| Commit ล่าสุด | `ba30914` + commit อัปเดตเอกสารหลัง CI (ดู `git log`) |
 | Phase ปัจจุบัน | Phase 11–13: deployed staging/production; เหลือ live provider + browser QA |
 | สถานะโดยรวม | Deploy จริงแล้วทั้ง staging/production ด้วย Mock Provider; ยังไม่ทดสอบ provider จริง |
 | Staging | https://ai-web-staging.peerapatmatprasong.workers.dev |
 | Production | https://ai-web.peerapatmatprasong.workers.dev |
-| Git status | งานรอบ deploy ถูก commit/push แล้ว (ยกเว้น `.dev.vars`, `แผนงาน/token`, `dist`, `.wrangler`) |
+| Git status | commit/push branch แล้ว · PR #1 เปิดอยู่ · CI `verify` ผ่าน · `main` ยังไม่ merge |
+| ลิงก์ | https://github.com/Beam091/Ai-web/pull/1 |
 
 ## 2. สิ่งที่เสร็จแล้ว
 
@@ -38,6 +39,7 @@
 **หลักฐานสำคัญ**
 - `npm test` → unit 26 passed, integration 16 passed
 - `npm run typecheck` / `npm run lint` / `npm run build` → ผ่าน
+- GitHub Actions `verify` บน PR #1 → success ([run 39400469357](https://github.com/Beam091/Ai-web/actions/runs/39400469357))
 - `wrangler dev` + curl: health `status:ok database:ok`, login 200, chat SSE 54 delta + done, detail มี user+assistant `complete`
 - Abort test: integration test ผ่าน; manual curl ตัดที่ 0.18s → assistant `status=aborted` 207 chars ถูกบันทึกจริง
 - Guardrails: `AI_TIMEOUT_SECONDS=1` → `PROVIDER_TIMEOUT` ที่ ~1.07s; ตั้ง `AI_MAX_OUTPUT_CHARS=120` (clamp เป็น 500) → `RESPONSE_LIMIT_REACHED` ที่ 500 chars และ persisted `status=error`
@@ -161,6 +163,7 @@ npm run dev
 - สร้าง D1 staging/production (APAC), apply migration, ตั้ง `SIGNUP_CODE` และ deploy จริงทั้งสอง env
 - Staging ผ่าน flow smoke + abort/timeout/output cap (Mock); production ผ่าน health/SPA/auth guard/headers/D1 tables
 - อัปเดตเอกสาร 00/01/04/05/07/08/09/14/15 และ README ให้ตรงสถานะ deploy จริง
+- push branch `deploy/staging-production`, เปิด PR #1 และ CI `verify` ผ่าน
 
 ---
 

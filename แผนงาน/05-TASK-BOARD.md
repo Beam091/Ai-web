@@ -30,7 +30,7 @@
 | TEST-02 | Integration tests (workerd + D1) | P0 | 16 passed (รวม abort) |
 | HARD-01 | Timeout + เพดานความยาวคำตอบ | P1 | `AI_TIMEOUT_SECONDS` / `AI_MAX_OUTPUT_CHARS`; unit 4 + manual timeout/cap ใน `08` |
 | POLISH-01 | ลด bundle ด้วย lazy Markdown/highlight | P2 | main 262.16 kB + lazy Markdown 339.15 kB; build ไม่มี warning; asset เสิร์ฟ 200 |
-| TEST-03 | CI workflow (typecheck/lint/test/build) | P1 | `.github/workflows/ci.yml` (ยังไม่รันบน GitHub) |
+| TEST-03 | CI workflow (typecheck/lint/test/build) | P1 | `.github/workflows/ci.yml`; PR #1 run `39400469357` ผ่าน |
 | DEPLOY-01 | Local deploy-equivalent verification | P0 | `wrangler dev` + local D1 + curl ผ่าน |
 | DEPLOY-02 | Deploy staging + production จริง | P0 | staging `820e706c...` / production `bcb17774...`; health/SPA/flow ผ่าน |
 | DOC-02 | Security/deployment/API/DB docs | P0 | เอกสารตรงกับโค้ด |
