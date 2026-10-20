@@ -1,0 +1,77 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ai-web",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ai-web-db",
+      "database_id": "3c73db62-b00f-4b52-8b5f-774ff53dec3a",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "APP_ENV": "development",
+    "DEFAULT_PROVIDER": "mock",
+    "AI_TIMEOUT_SECONDS": "90",
+    "AI_MAX_OUTPUT_CHARS": "32000"
+  },
+  "env": {
+    "staging": {
+      "name": "ai-web-staging",
+      "assets": {
+        "directory": "./dist/client",
+        "binding": "ASSETS",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": ["/api/*"]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "ai-web-db-staging",
+          "database_id": "3c73db62-b00f-4b52-8b5f-774ff53dec3a",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "vars": {
+        "APP_ENV": "staging",
+        "DEFAULT_PROVIDER": "mock",
+        "AI_TIMEOUT_SECONDS": "90",
+        "AI_MAX_OUTPUT_CHARS": "32000"
+      }
+    },
+    "production": {
+      "name": "ai-web",
+      "assets": {
+        "directory": "./dist/client",
+        "binding": "ASSETS",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": ["/api/*"]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "ai-web-db-prod",
+          "database_id": "4f59bd66-bbf1-4072-8aa4-3ca502514f6d",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "vars": {
+        "APP_ENV": "production",
+        "DEFAULT_PROVIDER": "mock",
+        "AI_TIMEOUT_SECONDS": "90",
+        "AI_MAX_OUTPUT_CHARS": "32000"
+      }
+    }
+  }
+}
